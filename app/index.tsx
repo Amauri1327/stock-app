@@ -7,7 +7,6 @@ import {
   Modal,
   Alert,
   FlatList,
-  Pressable,
 } from "react-native";
 import { Feather, Ionicons } from "@expo/vector-icons";
 
@@ -24,7 +23,6 @@ interface Product {
 }
 
 export default function HomeScreen() {
-  const [text, setText] = useState<string>("");
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   // Estados para os campos do formulário
@@ -49,10 +47,6 @@ export default function HomeScreen() {
         quantity,
         description,
       });
-
-      return Alert.alert(
-        "Produto cadastrado com o ID: " + response.insertedRowId
-      );
     } catch (error) {
       console.log(error);
     }
@@ -70,8 +64,6 @@ export default function HomeScreen() {
         quantity,
         description,
       });
-
-      Alert.alert("Produto atualizado!")
     } catch (error) {
       console.log(error);
     }
@@ -86,40 +78,39 @@ export default function HomeScreen() {
     }
   }
 
-  async function remove(id: number){
-      try {
-        await productDatabase.remove(id)
-        list()
-      } catch (error) {
-        console.log(error)
-      }
+  async function remove(id: number) {
+    try {
+      await productDatabase.remove(id);
+      list();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   useEffect(() => {
     list();
   }, [search]);
 
-  function details (item:ProductDatabase){
-      setId(String(item.id))
-      setName(item.name)
-      setQuantity(item.quantity)
-      setDescription(item.description)
-      setModalVisible(true)
+  function details(item: ProductDatabase) {
+    setId(String(item.id));
+    setName(item.name);
+    setQuantity(item.quantity);
+    setDescription(item.description);
+    setModalVisible(true);
   }
 
   async function handleSave() {
-    if (id){
-      update()
+    if (id) {
+      update();
     } else {
-      create()
+      create();
     }
-    setId('')
-    setName('')
-    setQuantity(0)
-    setDescription('')
-    setModalVisible(false)
-    await list()
-
+    setId("");
+    setName("");
+    setQuantity(0);
+    setDescription("");
+    setModalVisible(false);
+    await list();
   }
 
   // Limite de caracteres para o campo de descrição
@@ -145,7 +136,9 @@ export default function HomeScreen() {
         >
           <View className="flex-1 justify-center items-center bg-gray-300">
             <View className="w-96 h-auto p-10 bg-white rounded-3xl">
-              <Text className="text-3xl font-bold mb-4">Cadastrar/Atualizar produto</Text>
+              <Text className="text-3xl font-bold mb-4">
+                Cadastrar/Atualizar produto
+              </Text>
               <Text className="text-xl mb-4">
                 Insira as informações solicitadas
               </Text>
@@ -221,7 +214,13 @@ export default function HomeScreen() {
         <FlatList
           data={products}
           keyExtractor={(item) => String(item.id)}
-          renderItem={({ item }) => <Product data={item} onPress={() => details(item)} onDelete={() => remove(item.id)}/>}
+          renderItem={({ item }) => (
+            <Product
+              data={item}
+              onPress={() => details(item)}
+              onDelete={() => remove(item.id)}
+            />
+          )}
           contentContainerStyle={{ gap: 13 }}
         />
       </View>

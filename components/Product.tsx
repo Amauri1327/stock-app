@@ -23,18 +23,18 @@ export function Product({ data, onDelete, ...rest }: Props) {
       style={{
         backgroundColor: "#CECECE",
         padding: 24,
-        borderRadius: 5,
+        borderRadius: 20,
         gap: 12,
         flexDirection: "row",
       }}
       {...rest}
     >
-      <Text className="flex-1">
-        Nome: {data.name}
+      <Text className="flex-1 font-semibold text-lg">
+        {data.name}
         {"\n"}
-        Quantidade: {data.quantity}
+        - Quantidade: {data.quantity}
         {"\n"}
-        Descrição: {data.description}
+        - Descrição: {data.description}
       </Text>
       <TouchableOpacity onPress={onDelete}>
         <MaterialIcons name="delete-forever" size={40} color="red" />
