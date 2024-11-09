@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, TextInput, Modal, Alert } from "react-native";
+import { View, Text, TouchableOpacity, TextInput, Modal, Alert, FlatList, Pressable } from "react-native";
 import { Feather, Ionicons } from "@expo/vector-icons";
 
 import { useProductDatabase, ProductDatabase } from "@/database/useProductDatabase"
+import { Product } from "@/components/Product";
 
 interface Product {
   name: string;
@@ -33,6 +34,9 @@ export default function HomeScreen() {
       }
 
       const response = await productDatabase.create({ name, quantity, description});
+
+      list()
+
       return Alert.alert("Produto cadastrado com o ID: "+ response.insertedRowId)
     } catch (error) {
       console.log(error)
@@ -171,14 +175,17 @@ export default function HomeScreen() {
         <TextInput
           className="bg-gray-200 text-black left-4 text-2xl w-64 p-2 rounded-lg border"
           placeholder="Pesquisar produto"
-          onChangeText={setText}
-          value={text}
-          onSubmitEditing={() => {
-            console.log("Teclado");
-            setText('');
-          }}
+          onChangeText={setSearch}
         />
         <Feather className="left-56 -top-10" name="search" size={28} color="black" />
+
+        <FlatList
+          data={products}
+          keyExtractor={(item) => String(item.id)}
+          renderItem={({ item }) => <Product data={item} />}
+          contentContainerStyle={{gap: 13}}
+      />
+
       </View>
     </View>
   );
