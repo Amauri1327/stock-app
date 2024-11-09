@@ -1,12 +1,16 @@
-import { Pressable, PressableProps, Text } from "react-native";
+import { Pressable, PressableProps, Text, TouchableOpacity, View } from "react-native";
+
 
 type Props = PressableProps & {
   data: {
+    id: number;
     name: string;
     quantity: number;
     description: string;
   };
 };
+
+
 
 export function Product({ data, ...rest }: Props) {
   return (
@@ -25,6 +29,7 @@ export function Product({ data, ...rest }: Props) {
         Quantidade: {data.quantity}{"\n"}
         Descrição: {data.description}
       </Text>
+      
     </Pressable>
   );
 }
