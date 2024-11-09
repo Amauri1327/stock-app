@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, TextInput, Modal, Alert } from "react-native";
 import { Feather, Ionicons } from "@expo/vector-icons";
 
-import { useProductDatabase } from "@/database/useProductDatabase"
+import { useProductDatabase, ProductDatabase } from "@/database/useProductDatabase"
 
 interface Product {
   name: string;
@@ -18,9 +18,11 @@ export default function HomeScreen() {
   // Estados para os campos do formulário
   const [id, setId] =  useState('');
   const [name, setName] = useState<string>('');
+  const [search, setSearch] = useState<string>('');
+
   const [quantity, setQuantity] = useState<number>(0);
   const [description, setDescription] = useState<string>('');
-  const [products, setProducts] = useState([])
+  const [products, setProducts] = useState<ProductDatabase[]>([])
 
   const productDatabase = useProductDatabase();
 
@@ -41,11 +43,16 @@ export default function HomeScreen() {
 
   async function list() {
     try {
-      
+      const response = await productDatabase.searchByName(search)
+      setProducts(response)
     } catch (error) {
       console.log(error)
     }
   }
+
+  useEffect(() => {
+    list()
+  }, [search])
 
   // Limite de caracteres para o campo de descrição
   const descricaoLimite: number = 52;
