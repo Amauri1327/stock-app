@@ -71,6 +71,7 @@ export default function HomeScreen() {
         description,
       });
 
+      Alert.alert("Produto atualizado!")
     } catch (error) {
       console.log(error);
     }
@@ -83,6 +84,15 @@ export default function HomeScreen() {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async function remove(id: number){
+      try {
+        await productDatabase.remove(id)
+        list()
+      } catch (error) {
+        console.log(error)
+      }
   }
 
   useEffect(() => {
@@ -211,7 +221,7 @@ export default function HomeScreen() {
         <FlatList
           data={products}
           keyExtractor={(item) => String(item.id)}
-          renderItem={({ item }) => <Product data={item} onPress={() => details(item)}/>}
+          renderItem={({ item }) => <Product data={item} onPress={() => details(item)} onDelete={() => remove(item.id)}/>}
           contentContainerStyle={{ gap: 13 }}
         />
       </View>
