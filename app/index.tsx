@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, TextInput, Modal } from "react-native";
+import { View, Text, TouchableOpacity, TextInput, Modal, Alert } from "react-native";
 import { Feather, Ionicons } from "@expo/vector-icons";
+
+import { useProductDatabase } from "@/database/useProductDatabase"
 
 interface Product {
   name: string;
-  quantity: string;
+  quantity: number;
   description: string;
 }
 
@@ -14,16 +16,43 @@ export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   // Estados para os campos do formulário
+  const [id, setId] =  useState('');
   const [name, setName] = useState<string>('');
-  const [quantity, setQuantity] = useState<string>('');
+  const [quantity, setQuantity] = useState<number>(0);
   const [description, setDescription] = useState<string>('');
+  const [products, setProducts] = useState([])
+
+  const productDatabase = useProductDatabase();
+
+  async function create(){
+    try {
+      if (isNaN(Number(quantity))){
+        return Alert.alert("Quantidade", "A quantidade precisa ser um número!")
+      }
+
+      const response = await productDatabase.create({ name, quantity, description});
+      return Alert.alert("Produto cadastrado com o ID: "+ response.insertedRowId)
+    } catch (error) {
+      console.log(error)
+    }
+
+
+  }
+
+  async function list() {
+    try {
+      
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   // Limite de caracteres para o campo de descrição
   const descricaoLimite: number = 52;
 
   const saveProduct = (): void => {
 
-    if (!name.trim() || !quantity.trim() || !description.trim()){
+    if (!name.trim() || !quantity || !description.trim()){
       alert("todos os campos devem ser preenchidos")
       return;
     }
@@ -33,13 +62,14 @@ export default function HomeScreen() {
       quantity,
       description,
     };
-    console.log("Produto para enviar pro SQLite")
+    console.log("Produto salvo")
 
     setModalVisible(false);
     setName('');
-    setQuantity('');
+    setQuantity(0);
     setDescription('');
 
+    create();
   };
 
   return (
@@ -53,9 +83,6 @@ export default function HomeScreen() {
         >
           <Ionicons name="add" size={70} color="white" />
         </TouchableOpacity>
-
-
-
 
 
         <Modal
@@ -81,8 +108,13 @@ export default function HomeScreen() {
                 className="bg-gray-200 text-black text-xl p-2 rounded-lg border mb-4"
                 placeholder="Quantidade"
                 keyboardType="numeric"
-                onChangeText={setQuantity}
-                value={quantity}
+                onChangeText={(text) => {
+                  const parsedValue = parseInt(text, 10);
+                  if (!isNaN(parsedValue)){
+                    setQuantity(parsedValue);
+                  }
+                }}
+                value={quantity.toString()}
               />
               
               <TextInput
